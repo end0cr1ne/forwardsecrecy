@@ -1,0 +1,4 @@
+name: forwardSec
+dependencies:
+  cryptography: ^1.4.1
+  basic_utils: ^2.7.0
