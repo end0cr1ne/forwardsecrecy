@@ -4,7 +4,7 @@ import 'package:cryptography/cryptography.dart';
 import 'pkcs8.dart';
 
 List<int> xor(List<int> a, List<int> b) {
-  List<int> result = [];
+  List<int> result = new List(a.length);
   for (int i = 0; i < a.length; i++) result[i] = a[i] ^ b[i];
   return result;
 }
@@ -33,8 +33,8 @@ Future<void> main() async {
 
   //Key Derivation
   final xordNonces = xor(remoteNonce.bytes, localNonce.bytes);
-  final salt = Nonce(xordNonces.getRange(0, 20));
-  final iv = Nonce(xordNonces.getRange(20, 32));
+  final salt = Nonce(xordNonces.sublist(0, 20));
+  final iv = Nonce(xordNonces.sublist(20, 32));
   final sessionKey =
       await hkdf.deriveKey(sharedSecret, outputLength: 32, nonce: salt);
 
@@ -48,15 +48,15 @@ Future<void> main() async {
   );
 
   // Decrypt
-  // final decrypted = await cipher.decrypt(
-  //   encrypted,
-  //   secretKey: sessionKey,
-  //   nonce: iv,
-  // );
+  final decrypted = await cipher.decrypt(
+    encrypted,
+    secretKey: sessionKey,
+    nonce: iv,
+  );
 
   print({
-    'data': base64Encode(encrypted),
-    'localNonce': localNonce,
-    'publicKey': localKeyPair.publicKey
+    'data': utf8.decode(decrypted),
+    'localNonce': base64Encode(localNonce.bytes),
+    'publicKey': base64Encode(localKeyPair.publicKey.bytes)
   });
 }
