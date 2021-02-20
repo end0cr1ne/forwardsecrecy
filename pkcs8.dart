@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:pointycastle/src/utils.dart';
 
 Uint8List ecPublicKeyParser(String key) {
   var bytes = base64Decode(key
@@ -31,16 +30,10 @@ Uint8List ecPublicKeyParser(String key) {
     }
 
     // Looks good so far!
-    var firstByte = pubBytes.elementAt(0);
-    
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     // var y = pubBytes.sublist(1 + x.length, pubBytes.length);
 
     print(pubBytes);
 
   return x;
-}
-
-Uint8List ecPublicKeyGenerator(String key) {
-  
 }
