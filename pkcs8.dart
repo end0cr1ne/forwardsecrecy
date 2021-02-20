@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:pointycastle/src/utils.dart';
 
 Uint8List ecPublicKeyParser(String key) {
   var bytes = base64Decode(key
@@ -30,8 +29,15 @@ Uint8List ecPublicKeyParser(String key) {
   var subjectPublicKey = topLevelSeq.elements[1] as ASN1BitString;
   var pubBytes = subjectPublicKey.valueBytes;
   if (pubBytes.elementAt(0) == 0) {
+
     pubBytes = pubBytes.sublist(1);
   }
+      pubBytes = pubBytes.sublist(1);
+    }
+
+    // Looks good so far!
+    var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
+    // var y = pubBytes.sublist(1 + x.length, pubBytes.length);
 
   // Looks good so far!
   var firstByte = pubBytes.elementAt(0);
@@ -403,4 +409,5 @@ BigInt decodeBigIntWithSign(int sign, List<int> magnitude) {
     }
   }
   return result;
+}
 }
